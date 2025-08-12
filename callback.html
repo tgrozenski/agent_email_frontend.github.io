@@ -14,7 +14,8 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
-        const endpoint = "https://mockURL.com/oAuth"
+        // For testing
+        const endpoint = "https://localhost:8000/register"
         if (code) {
             console.log("Here is the code", code)
             json = {

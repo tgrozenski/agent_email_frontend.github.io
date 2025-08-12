@@ -14,13 +14,11 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
-        // For testing
-        const endpoint = "https://localhost:8000/register"
+        const endpoint = "http://localhost:8000/register" // Change this after testing
         if (code) {
             console.log("Here is the code", code)
             json = {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: {
                         'Content-Type': 'application/json'
                     },

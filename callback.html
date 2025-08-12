@@ -12,13 +12,10 @@
     </div>
 </body>
     <script>
-    async () => {
-        Params = new URLSearchParams(window.location.search);
+        const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
         if (code) {
             console.log("Here is the code", code)
         }
-    }
-
     </script>
 </html>

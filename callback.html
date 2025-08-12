@@ -27,11 +27,10 @@
                         code: code
                     })
             }
-            console.log(json)
-            // fetch(endpoint,json)
-            //     .then(response => response.json())
-            //     .then(data => console.log(data))
-            //     .catch(error => console.error('Error:', error));
+            fetch(endpoint, json)
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
         }
     </script>
 </html>

@@ -14,8 +14,23 @@
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
+        const endpoint = "https://mockURL.com/oAuth"
         if (code) {
             console.log("Here is the code", code)
+            json = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        code: code
+                    })
+            }
+            console.log(json)
+            // fetch(endpoint,json)
+            //     .then(response => response.json())
+            //     .then(data => console.log(data))
+            //     .catch(error => console.error('Error:', error));
         }
     </script>
 </html>

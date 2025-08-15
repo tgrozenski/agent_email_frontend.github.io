@@ -9,11 +9,12 @@
 <body class="bg-gray-100 flex items-center justify-center h-screen">
     <div class="text-center">
         <h1 class="text-5xl font-bold text-gray-800 mb-8">Welcome to Agent Email</h1>
-        <a href=
-            "https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/userinfo.email&access_type=offline&prompt=consent&include_granted_scopes=true&response_type=code&redirect_uri=https://tgrozenski.github.io/agent_email_frontend.github.io/callback.html&client_id=592589126466-flt6lvus63683vern3igrska7sllq2s9.apps.googleusercontent.com">
-            <button id="oAuth-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full shadow-lg transform transition-transform duration-200 hover:scale-105">
-                Log In With Google
-            </button>
+        <script src="oAuth.js"></script>
+        <a id="dynamic-link" href="#" class="inline-block bg-blue-500
+            hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full
+            shadow-lg transform transition-transform duration-200
+            hover:scale-105 text-center">
+            Log In With Google
         </a>
     </div>
     <script src="script.js"></script>

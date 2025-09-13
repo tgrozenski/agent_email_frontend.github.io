@@ -28,7 +28,14 @@
             }
             fetch(endpoint, json)
                 .then(response => response.json())
-                .then(data => console.log(data))
+                .then(data => {
+                    if (data.id_token) { // redirecting to doucuments logged in
+                        sessionStorage.setItem('google_id_token', data.id_token);
+                        window.location.href = "./documents.html"
+                    } else {
+                        console.error("No id_token in response", data);
+                    }
+                })
                 .catch(error => console.error('Error:', error));
         }
     </script>

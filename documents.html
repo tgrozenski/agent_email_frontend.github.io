@@ -42,10 +42,59 @@
                     loadingStatus.style.display = 'none'; // Hide loading message
 
                     if (data.documents && data.documents.length > 0) {
+                        const documentMap = new Map();
                         data.documents.forEach(doc => {
                             const docElement = document.createElement('div');
-                            docElement.className = 'p-4 border rounded-lg bg-gray-50';
-                            docElement.innerHTML = `<h2 class="text-xl font-semibold">${doc.name}</h2><p class="text-gray-700 mt-2">${doc.content}</p>`;
+                            docElement.className = 'p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer';
+                            docElement.innerHTML = `<h2 class="text-xl font-semibold">${doc.name}</h2>`;
+                            docElement.setAttribute('data-doc-id', doc.id);
+                            
+                            documentMap.set(doc.id, doc);
+
+                            docElement.addEventListener('click', async (event) => {
+                                const docId = event.currentTarget.getAttribute('data-doc-id');
+                                if (!docId) return;
+
+                                const existingDetails = event.currentTarget.nextElementSibling;
+                                if (existingDetails && existingDetails.classList.contains('document-details')) {
+                                    existingDetails.remove();
+                                    return;
+                                }
+
+                                const getDocEndpoint = `http://localhost:8000/getDocumentById?document_id=${docId}`;
+                                
+                                try {
+                                    const docResponse = await fetch(getDocEndpoint, {
+                                        method: 'GET',
+                                        headers: {
+                                            'Authorization': `Bearer ${token}`
+                                        }
+                                    });
+
+                                    if (docResponse.ok) {
+                                        const docData = await docResponse.json();
+                                        
+                                        const detailsContainer = document.createElement('div');
+                                        detailsContainer.className = 'document-details p-4 mt-2 border rounded-lg bg-white shadow';
+
+                                        const contentTextArea = document.createElement('textarea');
+                                        contentTextArea.className = 'w-full h-64 p-2 border rounded-md font-mono text-sm bg-gray-50';
+                                        contentTextArea.value = JSON.stringify(docData.document, null, 2);
+
+                                        detailsContainer.appendChild(contentTextArea);
+                                        event.currentTarget.insertAdjacentElement('afterend', detailsContainer);
+
+                                    } else {
+                                        const errorData = await docResponse.json();
+                                        console.error('Error fetching document:', errorData);
+                                        alert(`Error fetching document: ${errorData.error || docResponse.statusText}`);
+                                    }
+                                } catch (error) {
+                                    console.error('An unexpected error occurred while fetching the document:', error);
+                                    alert('An unexpected error occurred while fetching the document.');
+                                }
+                            });
+
                             documentsContainer.appendChild(docElement);
                         });
                     } else {

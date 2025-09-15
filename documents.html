@@ -50,10 +50,11 @@
                             
 
                             docElement.addEventListener('click', async (event) => {
-                                const docId = event.currentTarget.getAttribute('data-doc-id');
+                                const clickedElement = event.currentTarget;
+                                const docId = clickedElement.getAttribute('data-doc-id');
                                 if (!docId) return;
 
-                                const existingDetails = event.currentTarget.nextElementSibling;
+                                const existingDetails = clickedElement.nextElementSibling;
                                 if (existingDetails && existingDetails.classList.contains('document-details')) {
                                     existingDetails.remove();
                                     return;
@@ -81,7 +82,7 @@
                                         contentTextArea.value = docData.document;
 
                                         detailsContainer.appendChild(contentTextArea);
-                                        event.currentTarget.insertAdjacentElement('afterend', detailsContainer);
+                                        clickedElement.insertAdjacentElement('afterend', detailsContainer);
 
                                     } else {
                                         const errorData = await docResponse.json();

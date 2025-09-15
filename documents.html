@@ -79,7 +79,7 @@
 
                                         const contentTextArea = document.createElement('textarea');
                                         contentTextArea.className = 'w-full h-64 p-2 border rounded-md font-mono text-sm bg-gray-50';
-                                        contentTextArea.value = docData.document;
+                                        contentTextArea.value = docData.document.content;
 
                                         detailsContainer.appendChild(contentTextArea);
                                         clickedElement.insertAdjacentElement('afterend', detailsContainer);

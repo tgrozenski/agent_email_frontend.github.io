@@ -60,6 +60,11 @@
                                     return;
                                 }
 
+                                const loadingElement = document.createElement('div');
+                                loadingElement.className = 'document-details p-4 mt-2 text-center';
+                                loadingElement.innerHTML = `<p class="text-gray-500">Loading...</p>`;
+                                clickedElement.insertAdjacentElement('afterend', loadingElement);
+
                                 const getDocEndpoint = `http://localhost:8000/getDocumentById?doc_id=${docId}`;
                                 
                                 try {
@@ -69,6 +74,8 @@
                                             'Authorization': `Bearer ${token}`
                                         }
                                     });
+
+                                    loadingElement.remove();
 
                                     if (docResponse.ok) {
                                         const docData = await docResponse.json();
@@ -90,6 +97,7 @@
                                         alert(`Error fetching document: ${errorData.error || docResponse.statusText}`);
                                     }
                                 } catch (error) {
+                                    loadingElement.remove();
                                     console.error('An unexpected error occurred while fetching the document:', error);
                                     alert('An unexpected error occurred while fetching the document.');
                                 }

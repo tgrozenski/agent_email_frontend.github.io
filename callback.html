@@ -27,9 +27,9 @@
                     })
             }
             fetch(endpoint, json)
-                .then(response => {response.json(); console.log(response);})
+                .then(response => { response.json() })
                 .then(data => {
-                    if (data.id_token) { // redirecting to doucuments logged in
+                    if (data && data.id_token) { // redirecting to doucuments logged in
                         console.log("Received data", data);
                         sessionStorage.setItem('google_id_token', data.id_token);
                         window.location.href = "./documents.html"

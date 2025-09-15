@@ -61,7 +61,7 @@
                                     return;
                                 }
 
-                                const getDocEndpoint = `http://localhost:8000/getDocumentById?document_id=${docId}`;
+                                const getDocEndpoint = `http://localhost:8000/getDocumentById?doc_id=${docId}`;
                                 
                                 try {
                                     const docResponse = await fetch(getDocEndpoint, {

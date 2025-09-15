@@ -42,14 +42,12 @@
                     loadingStatus.style.display = 'none'; // Hide loading message
 
                     if (data.documents && data.documents.length > 0) {
-                        const documentMap = new Map();
                         data.documents.forEach(doc => {
                             const docElement = document.createElement('div');
                             docElement.className = 'p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer';
                             docElement.innerHTML = `<h2 class="text-xl font-semibold">${doc.name}</h2>`;
                             docElement.setAttribute('data-doc-id', doc.id);
                             
-                            documentMap.set(doc.id, doc);
 
                             docElement.addEventListener('click', async (event) => {
                                 const docId = event.currentTarget.getAttribute('data-doc-id');
@@ -73,14 +71,14 @@
 
                                     if (docResponse.ok) {
                                         const docData = await docResponse.json();
-                                        console.log("fetched, document: ", JSON.stringify(docData.document, null, 2));
+                                        console.log("fetched, document: ", docData.document);
                                         
                                         const detailsContainer = document.createElement('div');
                                         detailsContainer.className = 'document-details p-4 mt-2 border rounded-lg bg-white shadow';
 
                                         const contentTextArea = document.createElement('textarea');
                                         contentTextArea.className = 'w-full h-64 p-2 border rounded-md font-mono text-sm bg-gray-50';
-                                        contentTextArea.value = JSON.stringify(docData.document, null, 2);
+                                        contentTextArea.value = docData.document;
 
                                         detailsContainer.appendChild(contentTextArea);
                                         event.currentTarget.insertAdjacentElement('afterend', detailsContainer);

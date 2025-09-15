@@ -30,6 +30,7 @@
                 .then(response => {response.json(); console.log(response);})
                 .then(data => {
                     if (data.id_token) { // redirecting to doucuments logged in
+                        console.log("Received data", data);
                         sessionStorage.setItem('google_id_token', data.id_token);
                         window.location.href = "./documents.html"
                     } else {

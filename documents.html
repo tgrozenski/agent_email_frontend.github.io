@@ -96,26 +96,26 @@
                                         deleteButton.className = 'mt-2 ml-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600';
 
                                         deleteButton.addEventListener('click', async () => {
-                                        const deleteEndpoint = `http://localhost:8000/deleteDocument?doc_id=${docId}`;
+                                            const deleteEndpoint = `http://localhost:8000/deleteDocument?doc_id=${docId}`;
 
-                                        try {
-                                            const deleteResponse = await fetch(deleteEndpoint, {
-                                                method: 'DELETE',
-                                                headers: {
-                                                'Authorization': `Bearer ${token}`
+                                            try {
+                                                const deleteResponse = await fetch(deleteEndpoint, {
+                                                    method: 'GET',
+                                                    headers: {
+                                                    'Authorization': `Bearer ${token}`
+                                                    }
+                                                });
+
+                                                if (deleteResponse.ok) {
+                                                    await deleteResponse.json();
+                                                    alert('Document deleted successfully!');
+                                                    clickedElement.remove();
+                                                    detailsContainer.remove();
+                                                } else {
+                                                    const errorData = await deleteResponse.json();
+                                                    console.error('Error deleting document:', errorData);
+                                                    alert(`Error deleting document: ${errorData.Error || errorData.error || deleteResponse.statusText}`);
                                                 }
-                                            });
-
-                                            if (deleteResponse.ok) {
-                                                await deleteResponse.json();
-                                                alert('Document deleted successfully!');
-                                                clickedElement.remove();
-                                                detailsContainer.remove();
-                                            } else {
-                                                const errorData = await deleteResponse.json();
-                                                console.error('Error deleting document:', errorData);
-                                                alert(`Error deleting document: ${errorData.Error || errorData.error || deleteResponse.statusText}`);
-                                            }
                                             } catch (error) {
                                                 console.error('An unexpected error occurred while deleting the document:', error);
                                                 alert('An unexpected error occurred while deleting the document.');

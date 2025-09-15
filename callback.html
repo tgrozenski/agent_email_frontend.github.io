@@ -27,7 +27,7 @@
                     })
             }
             fetch(endpoint, json)
-                .then(response => { response.json() })
+                .then(response => response.json())
                 .then(data => {
                     if (data && data.id_token) { // redirecting to doucuments logged in
                         console.log("Received data", data);

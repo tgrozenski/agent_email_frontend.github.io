@@ -73,6 +73,7 @@
 
                                     if (docResponse.ok) {
                                         const docData = await docResponse.json();
+                                        console.log("fetched, document: ", JSON.stringify(docData.document, null, 2));
                                         
                                         const detailsContainer = document.createElement('div');
                                         detailsContainer.className = 'document-details p-4 mt-2 border rounded-lg bg-white shadow';

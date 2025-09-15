@@ -88,7 +88,45 @@
                                         contentTextArea.className = 'w-full h-64 p-2 border rounded-md font-mono text-sm bg-gray-50';
                                         contentTextArea.value = docData.document.content;
 
+                                        const saveButton = document.createElement('button');
+                                        saveButton.textContent = 'Save';
+                                        saveButton.className = 'mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600';
+
+                                        saveButton.addEventListener('click', async () => {
+                                            const docName = clickedElement.querySelector('h2').textContent;
+                                            const textContent = contentTextArea.value;
+                                            const saveEndpoint = 'http://localhost:8000/saveDocument';
+
+                                            try {
+                                                const saveResponse = await fetch(saveEndpoint, {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Authorization': `Bearer ${token}`,
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({
+                                                        doc_name: docName,
+                                                        text_content: textContent
+                                                    })
+                                                });
+
+                                                if (saveResponse.ok) {
+                                                    await saveResponse.json();
+                                                    alert('Document saved successfully!');
+                                                    detailsContainer.remove();
+                                                } else {
+                                                    const errorData = await saveResponse.json();
+                                                    console.error('Error saving document:', errorData);
+                                                    alert(`Error saving document: ${errorData.Error || errorData.error || saveResponse.statusText}`);
+                                                }
+                                            } catch (error) {
+                                                console.error('An unexpected error occurred while saving the document:', error);
+                                                alert('An unexpected error occurred while saving the document.');
+                                            }
+                                        });
+
                                         detailsContainer.appendChild(contentTextArea);
+                                        detailsContainer.appendChild(saveButton);
                                         clickedElement.insertAdjacentElement('afterend', detailsContainer);
 
                                     } else {

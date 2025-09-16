@@ -89,7 +89,7 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    
+                    console.log("Fetched documents: ", data.documents); 
                     if (data.documents && data.documents.length > 0) {
                         loadingStatus.style.display = 'none'; // Hide loading message
                         nextPageBtn.disabled = data.documents.length < items_per_page;

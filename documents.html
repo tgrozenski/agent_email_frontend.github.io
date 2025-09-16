@@ -98,8 +98,9 @@
                             docElement.className = 'p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer document-item';
                             docElement.innerHTML = `<h2 class="text-xl font-semibold">${doc.name}</h2>`;
                             docElement.setAttribute('data-doc-id', doc.id);
+                            docElement.setAttribute('data-doc-content', doc.content);
 
-                            docElement.addEventListener('click', async (event) => {
+                            docElement.addEventListener('click', (event) => {
                                 const clickedElement = event.currentTarget;
                                 const docId = clickedElement.getAttribute('data-doc-id');
                                 if (!docId) return;
@@ -110,118 +111,88 @@
                                     return;
                                 }
 
-                                const loadingElement = document.createElement('div');
-                                loadingElement.className = 'document-details p-4 mt-2 text-center';
-                                loadingElement.innerHTML = `<p class="text-gray-500">Loading...</p>`;
-                                clickedElement.insertAdjacentElement('afterend', loadingElement);
-
-                                const getDocEndpoint = `http://localhost:8000/getDocumentById?doc_id=${docId}`;
+                                const docContent = clickedElement.getAttribute('data-doc-content');
                                 
-                                try {
-                                    const docResponse = await fetch(getDocEndpoint, {
-                                        method: 'GET',
-                                        headers: {
+                                const detailsContainer = document.createElement('div');
+                                detailsContainer.className = 'document-details p-4 mt-2 border rounded-lg bg-white shadow';
+
+                                const contentTextArea = document.createElement('textarea');
+                                contentTextArea.className = 'w-full h-64 p-2 border rounded-md font-mono text-sm bg-gray-50';
+                                contentTextArea.value = docContent;
+
+                                const saveButton = document.createElement('button');
+                                saveButton.textContent = 'Save';
+                                saveButton.className = 'mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600';
+
+                                const deleteButton = document.createElement('button');
+                                deleteButton.textContent = 'Delete Document';
+                                deleteButton.className = 'mt-2 ml-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600';
+
+                                deleteButton.addEventListener('click', async () => {
+                                    const deleteEndpoint = `http://localhost:8000/deleteDocument?doc_id=${docId}`;
+
+                                    try {
+                                        const deleteResponse = await fetch(deleteEndpoint, {
+                                            method: 'DELETE',
+                                            headers: {
                                             'Authorization': `Bearer ${token}`
+                                            }
+                                        });
+
+                                        if (deleteResponse.ok) {
+                                            await deleteResponse.json();
+                                            alert('Document deleted successfully!');
+                                            clickedElement.remove();
+                                            detailsContainer.remove();
+                                        } else {
+                                            const errorData = await deleteResponse.json();
+                                            console.error('Error deleting document:', errorData);
+                                            alert(`Error deleting document: ${errorData.Error || errorData.error || deleteResponse.statusText}`);
                                         }
+                                    } catch (error) {
+                                        console.error('An unexpected error occurred while deleting the document:', error);
+                                        alert('An unexpected error occurred while deleting the document.');
+                                    }
+                                });
+
+                                saveButton.addEventListener('click', async () => {
+                                const docName = clickedElement.querySelector('h2').textContent;
+                                const textContent = contentTextArea.value;
+                                const saveEndpoint = 'http://localhost:8000/saveDocument';
+
+                                try {
+                                    const saveResponse = await fetch(saveEndpoint, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Authorization': `Bearer ${token}`,
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            doc_name: docName,
+                                            text_content: textContent,
+                                            doc_id: docId
+                                        })
                                     });
 
-                                    loadingElement.remove();
-
-                                    if (docResponse.ok) {
-                                        const docData = await docResponse.json();
-                                        console.log("fetched, document: ", docData.document);
-                                        
-                                        const detailsContainer = document.createElement('div');
-                                        detailsContainer.className = 'document-details p-4 mt-2 border rounded-lg bg-white shadow';
-
-                                        const contentTextArea = document.createElement('textarea');
-                                        contentTextArea.className = 'w-full h-64 p-2 border rounded-md font-mono text-sm bg-gray-50';
-                                        contentTextArea.value = docData.document.content;
-
-                                        const saveButton = document.createElement('button');
-                                        saveButton.textContent = 'Save';
-                                        saveButton.className = 'mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600';
-
-                                        const deleteButton = document.createElement('button');
-                                        deleteButton.textContent = 'Delete Document';
-                                        deleteButton.className = 'mt-2 ml-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600';
-
-                                        deleteButton.addEventListener('click', async () => {
-                                            const deleteEndpoint = `http://localhost:8000/deleteDocument?doc_id=${docId}`;
-
-                                            try {
-                                                const deleteResponse = await fetch(deleteEndpoint, {
-                                                    method: 'DELETE',
-                                                    headers: {
-                                                    'Authorization': `Bearer ${token}`
-                                                    }
-                                                });
-
-                                                if (deleteResponse.ok) {
-                                                    await deleteResponse.json();
-                                                    alert('Document deleted successfully!');
-                                                    clickedElement.remove();
-                                                    detailsContainer.remove();
-                                                } else {
-                                                    const errorData = await deleteResponse.json();
-                                                    console.error('Error deleting document:', errorData);
-                                                    alert(`Error deleting document: ${errorData.Error || errorData.error || deleteResponse.statusText}`);
-                                                }
-                                            } catch (error) {
-                                                console.error('An unexpected error occurred while deleting the document:', error);
-                                                alert('An unexpected error occurred while deleting the document.');
-                                            }
-                                        });
-
-                                        saveButton.addEventListener('click', async () => {
-                                        const docName = clickedElement.querySelector('h2').textContent;
-                                        const textContent = contentTextArea.value;
-                                        const saveEndpoint = 'http://localhost:8000/saveDocument';
-
-                                        try {
-                                            const saveResponse = await fetch(saveEndpoint, {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Authorization': `Bearer ${token}`,
-                                                    'Content-Type': 'application/json'
-                                                },
-                                                body: JSON.stringify({
-                                                    doc_name: docName,
-                                                    text_content: textContent,
-                                                    doc_id: docId
-                                                })
-                                            });
-
-                                            if (saveResponse.ok) {
-                                                await saveResponse.json();
-                                                alert('Document saved successfully!');
-                                                detailsContainer.remove();
-                                            } else {
-                                                const errorData = await saveResponse.json();
-                                                console.error('Error saving document:', errorData);
-                                                alert(`Error saving document: ${errorData.Error || errorData.error || saveResponse.statusText}`);
-                                            }
-                                            } catch (error) {
-                                                console.error('An unexpected error occurred while saving the document:', error);
-                                                alert('An unexpected error occurred while saving the document.');
-                                            }
-                                        });
-
-                                        detailsContainer.appendChild(contentTextArea);
-                                        detailsContainer.appendChild(saveButton);
-                                        detailsContainer.appendChild(deleteButton);
-                                        clickedElement.insertAdjacentElement('afterend', detailsContainer);
-
+                                    if (saveResponse.ok) {
+                                        await saveResponse.json();
+                                        alert('Document saved successfully!');
+                                        detailsContainer.remove();
                                     } else {
-                                        const errorData = await docResponse.json();
-                                        console.error('Error fetching document:', errorData);
-                                        alert(`Error fetching document: ${errorData.error || docResponse.statusText}`);
+                                        const errorData = await saveResponse.json();
+                                        console.error('Error saving document:', errorData);
+                                        alert(`Error saving document: ${errorData.Error || errorData.error || saveResponse.statusText}`);
                                     }
-                                } catch (error) {
-                                    loadingElement.remove();
-                                    console.error('An unexpected error occurred while fetching the document:', error);
-                                    alert('An unexpected error occurred while fetching the document.');
-                                }
+                                    } catch (error) {
+                                        console.error('An unexpected error occurred while saving the document:', error);
+                                        alert('An unexpected error occurred while saving the document.');
+                                    }
+                                });
+
+                                detailsContainer.appendChild(contentTextArea);
+                                detailsContainer.appendChild(saveButton);
+                                detailsContainer.appendChild(deleteButton);
+                                clickedElement.insertAdjacentElement('afterend', detailsContainer);
                             });
                             documentsContainer.appendChild(docElement);
                         });

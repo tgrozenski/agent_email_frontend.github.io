@@ -177,6 +177,7 @@
                                     if (saveResponse.ok) {
                                         await saveResponse.json();
                                         alert('Document saved successfully!');
+                                        clickedElement.setAttribute('data-doc-content', textContent);
                                         detailsContainer.remove();
                                     } else {
                                         const errorData = await saveResponse.json();
